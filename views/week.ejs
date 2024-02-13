@@ -1,0 +1,83 @@
+<%- include('partials/header.ejs'); -%>
+
+<div class="box" id="heading">
+    <h1>
+      <%= listTitle %>
+    </h1>
+  </div>
+
+  <div class="item-heading">
+    <!-- Headings for Task, Priority, and Due Date -->
+    <h2 class="task-heading">Task</h2>
+    <h2 class="priority-heading">Priority</h2>
+    <h2 class="duedate-heading">Due Date</h2>
+  </div>
+
+  <div class="box">
+    <% for(let item of listItems){ %>
+      <div class="item <%= item.priority.toLowerCase() %>">
+        <form action="/deleteWeek" method="post">
+          <input type="checkbox" onchange="this.form.submit()" name="deleteItemId" value="<%= item.id %>">  
+        </form>
+
+        <p id="title<%=item.id%>"  >
+          <%= item.title %>
+        </p>
+
+        <p id="priority<%=item.id%>" class="priority" >
+          <%= item.priority %>
+        </p>
+
+        <p id="duedate<%= item.id %>" class="duedate">
+          <%= new Date(item.duedate).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) %>
+        </p>
+        
+
+        <form class="edit" action="/editWeek" method="post">
+          <input type="hidden" name="updatedItemId" value="<%= item.id %>">
+          <input id="input<%=item.id%>" type="text" name="updatedItemTitle" value="<%= item.title %>" autocomplete="off"
+            autofocus="true" hidden="true" />
+          <button id="done<%=item.id%>" class="edit" type="submit" hidden = "true"><i class="fa-regular fa-circle-check"></i></button>
+        </form>
+        <button id="edit<%=item.id%>" class="edit" onclick="handler('<%=item.id%>')"><i class="fa-solid fa-pen"></i></i></button>
+      </div>
+      <% } %>
+
+        <form class="item" action="/addWeek" method="post">
+          <input type="text" name="newItem" placeholder="New Item" autocomplete="off" autofocus="true" />
+           <!-- Priority input -->
+  <select name="priority" class = "priority">
+    <option value="high" class = "high">High</option>
+    <option value="medium" class = "medium">Medium</option>
+    <option value="low" class = "low">Low</option>
+  </select>
+
+  <!-- Due Date input -->
+  <input type="date" name="dueDate" class="date">
+
+          <button class="add" type="submit" name="list" >+</button>
+        </form>
+  </div>
+
+
+
+
+<form class="todo-buttons" action="/month" method="post">
+  <input type="submit" name="month" value="Monthly-Todo" id="tab" class="monthly-todo">
+  <label for="tab">Monthly TODO</label>
+</form>
+
+
+<script>
+    function handler(id) {
+      document.getElementById("title" + id).setAttribute("hidden", true)  // will vanish
+      document.getElementById("edit" + id).setAttribute("hidden", true)    // will vanish
+      document.getElementById("done" + id).removeAttribute("hidden")    // will appear
+      document.getElementById("input" + id).removeAttribute("hidden")      // will appear
+    }
+  </script>
+
+
+
+
+<%- include('partials/footer.ejs'); -%>
